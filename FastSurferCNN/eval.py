@@ -380,11 +380,11 @@ def fast_surfer_cnn(img_filename, save_as, args):
     # Start View Aggregation: change from N,C,X,Y to coronal view with C in last dimension = H,W,D,C
     prediction_probability_axial = prediction_probability_axial.permute(3, 0, 2, 1)
     prediction_probability_coronal = prediction_probability_coronal.permute(2, 3, 0, 1)
-    prediction_probability_sagittal = prediction_probability_sagittal.permute(0, 3, 2, 1)
+    prediction_probability_sagittal = torch.mul(prediction_probability_sagittal.permute(0, 3, 2, 1), 0.2)
 
     _, prediction_image = torch.max(torch.add(torch.mul(torch.add(prediction_probability_axial,
                                                                   prediction_probability_coronal), 0.4),
-                                              torch.mul(prediction_probability_sagittal, 0.2)), 3)
+                                              prediction_probability_sagittal), 3)
 
     prediction_image = prediction_image.numpy()
 
